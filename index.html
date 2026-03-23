@@ -119,6 +119,22 @@
             border-color: transparent;
             color: #fb7185;
         }
+
+        /* Стили для виджета Pinterest – скрываем всё, кроме картинок */
+        .pinterest-widget .boardHeader,
+        .pinterest-widget .boardFollowButton,
+        .pinterest-widget .pinMeta,
+        .pinterest-widget .pinAttribution,
+        .pinterest-widget .boardName,
+        .pinterest-widget .boardHeader .boardName,
+        .pinterest-widget .boardHeader .followButton {
+            display: none !important;
+        }
+
+        .pinterest-widget iframe {
+            width: 100% !important;
+            min-height: 500px;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-pink-100 via-rose-50 to-white text-rose-950 min-h-screen overflow-hidden relative">
@@ -232,8 +248,9 @@
                 <div id="local-gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
             </div>
             <div id="tab-2" class="tab-pane hidden">
-                <div id="pinterest-gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <div class="col-span-full text-center py-10 text-rose-400">Загрузка фотографий из Pinterest...</div>
+                <div class="pinterest-widget">
+                    <a data-pin-do="embedBoard" href="https://ru.pinterest.com/vertuskas/miau/"></a>
+                    <script async defer src="//assets.pinterest.com/js/pinit.js"></script>
                 </div>
             </div>
         </div>
@@ -282,16 +299,9 @@
 
         const catImageUrl = "assets/photos/cat.jpg";
 
-        // ========== PINTEREST НАСТРОЙКИ ==========
-        // ⚠️ ВСТАВЬТЕ СВОИ ДАННЫЕ (username и название доски)
-        const PINTEREST_USER = "vertuskas";      // например, "mykittens"
-        const PINTEREST_BOARD = "miau"; // например, "cute-cats"
-        const RSS_URL = `https://www.pinterest.com/${PINTEREST_USER}/${PINTEREST_BOARD}.rss`;
-
         let escapeCount = 0;
         let hoverCount = 0;
 
-        // Летающие эмодзи
         function createFlyingBackground() {
             const container = document.getElementById('flying-bg');
             const emojis = ['❤️', '💕', '🌸', '🐱', '💗'];
@@ -307,7 +317,6 @@
             }
         }
 
-        // Кнопка "НЕТ" убегает
         function runAway() {
             const btn = document.getElementById('no-button');
             const container = document.getElementById('buttons-container');
@@ -402,7 +411,6 @@
             }
         }
 
-        // Локальная галерея
         function renderLocalGallery() {
             const grid = document.getElementById('local-gallery');
             if (!grid) return;
@@ -420,73 +428,6 @@
             if (mainImg && photos.length) mainImg.src = photos[0];
         }
 
-        // ========== УЛУЧШЕННАЯ ЗАГРУЗКА PINTEREST (парсинг RSS напрямую) ==========
-        async function loadPinterestBoard() {
-            const container = document.getElementById('pinterest-gallery');
-            container.innerHTML = '<div class="col-span-full text-center py-10 text-rose-400">Загрузка фотографий...</div>';
-            try {
-                // Используем прокси для обхода CORS (бесплатный)
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(RSS_URL)}`;
-                const response = await fetch(proxyUrl);
-                const data = await response.json();
-                if (!data.contents) throw new Error('Не удалось загрузить RSS');
-
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-                const items = xmlDoc.querySelectorAll("item");
-                if (items.length === 0) throw new Error('Нет элементов в ленте');
-
-                const imageUrls = [];
-                items.forEach(item => {
-                    // Ищем media:content (оригинал)
-                    let imgUrl = null;
-                    const mediaContent = item.querySelector("media\\:content, content");
-                    if (mediaContent && mediaContent.getAttribute("url")) {
-                        imgUrl = mediaContent.getAttribute("url");
-                    } else {
-                        // Если нет media:content, ищем в description
-                        const description = item.querySelector("description");
-                        if (description) {
-                            const htmlContent = description.textContent;
-                            const imgMatch = htmlContent.match(/<img[^>]+src="([^">]+)"/);
-                            if (imgMatch && imgMatch[1]) {
-                                imgUrl = imgMatch[1];
-                                // Попытка преобразовать превью в оригинал
-                                if (imgUrl.includes("i.pinimg.com") && imgUrl.includes("/736x/")) {
-                                    imgUrl = imgUrl.replace("/736x/", "/originals/");
-                                } else if (imgUrl.includes("/564x/")) {
-                                    imgUrl = imgUrl.replace("/564x/", "/originals/");
-                                }
-                            }
-                        }
-                    }
-                    if (imgUrl) {
-                        // Убираем возможные параметры запроса
-                        imgUrl = imgUrl.split('?')[0];
-                        imageUrls.push(imgUrl);
-                    }
-                });
-
-                if (imageUrls.length === 0) throw new Error('Изображения не найдены');
-
-                container.innerHTML = '';
-                imageUrls.forEach(imgUrl => {
-                    const card = document.createElement('div');
-                    card.className = 'bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300';
-                    card.innerHTML = `
-                        <div class="aspect-square overflow-hidden">
-                            <img src="${imgUrl}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" alt="pin image" loading="lazy">
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (error) {
-                console.error('Ошибка загрузки Pinterest:', error);
-                container.innerHTML = `<div class="col-span-full text-center py-10 text-red-500">Не удалось загрузить фотографии. Проверьте имя пользователя и доску.</div>`;
-            }
-        }
-
-        // Переключение вкладок
         function switchTab(tabIndex) {
             document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
             const activePane = document.getElementById(`tab-${tabIndex}`);
@@ -495,10 +436,6 @@
                 if (idx == tabIndex) btn.classList.add('active');
                 else btn.classList.remove('active');
             });
-            if (tabIndex === 2 && !window.pinterestLoaded) {
-                loadPinterestBoard();
-                window.pinterestLoaded = true;
-            }
         }
 
         function initSite() {
@@ -531,7 +468,7 @@
         window.onload = () => {
             createFlyingBackground();
             addHoverBehavior();
-            console.log('✅ Сайт загружен. Pinterest загрузит оригинальные изображения.');
+            console.log('✅ Сайт загружен. Pinterest виджет загрузится при открытии вкладки.');
         };
     </script>
 </body>
