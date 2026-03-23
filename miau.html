@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для моей Никули ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @font-face {
+            font-family: 'Laptev Brush Cyrillic';
+            src: url('assets/fonts/LaptevBrush.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        .love-font {
+            font-family: 'Laptev Brush Cyrillic', 'Great Vibes', cursive;
+        }
+
+        .flying-bg {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .flying-emoji {
+            position: absolute;
+            font-size: 2.8rem;
+            opacity: 0.35;
+            animation: fly linear infinite;
+            user-select: none;
+        }
+
+        @keyframes fly {
+            0% { transform: translateY(110vh) rotate(0deg); }
+            100% { transform: translateY(-120vh) rotate(720deg); }
+        }
+
+        .intro-card {
+            background: white;
+            border: 14px solid #fda4af;
+            box-shadow: 0 30px 60px -15px rgb(244 63 94 / 0.35);
+            animation: cardPop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes cardPop {
+            0% { transform: scale(0.65) rotate(-6deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+
+        .no-btn {
+            transition: all 0.45s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
+        }
+
+        #buttons-container {
+            position: relative;
+            height: 92px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 32px;
+        }
+
+        #closed-envelope {
+            font-size: 280px !important;
+            line-height: 1;
+            display: block;
+            margin: 0 auto 24px;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .envelope-opening {
+            animation: openEnvelope 1.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+
+        @keyframes openEnvelope {
+            0%   { transform: rotate(0deg) scale(1); }
+            20%  { transform: rotate(-14deg) scale(1.12); }
+            35%  { transform: rotate(22deg) scale(1.08); }
+            55%  { transform: rotate(-10deg) scale(1.28); }
+            75%  { transform: rotate(8deg) scale(1.22); }
+            100% { transform: rotate(0deg) scale(1.42); }
+        }
+
+        .scrollable-content {
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .scrollable-content {
+                height: calc(100vh - 100px);
+                padding: 1rem;
+            }
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            border-bottom-width: 4px;
+            border-color: #f43f5e;
+            color: #e11d48;
+        }
+        .tab-btn:not(.active) {
+            border-bottom-width: 4px;
+            border-color: transparent;
+            color: #fb7185;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-100 via-rose-50 to-white text-rose-950 min-h-screen overflow-hidden relative">
+
+    <div id="flying-bg" class="flying-bg"></div>
+
+    <!-- ЭКРАН ВХОДА -->
+    <div id="intro-screen" class="fixed inset-0 flex items-center justify-center z-50">
+        <div id="intro-card" class="intro-card relative w-full max-w-[480px] mx-6 rounded-3xl p-12 text-center">
+            <h1 class="love-font text-[46px] leading-none text-rose-600 mb-10">
+                Соскучилась<br>по мне? ❤️
+            </h1>
+            <div id="buttons-container">
+                <button onclick="yesClicked()" 
+                        class="bg-rose-500 hover:bg-rose-600 text-white px-16 py-6 rounded-3xl text-3xl font-bold shadow-xl transition-all active:scale-95 flex items-center gap-4">
+                    ДА 
+                    <span class="text-4xl">❤️</span>
+                </button>
+                <button id="no-button" 
+                        onclick="noClicked()" 
+                        class="no-btn bg-white border-4 border-rose-400 text-rose-500 px-14 py-6 rounded-3xl text-3xl font-bold shadow-xl">
+                    НЕТ 😢
+                </button>
+            </div>
+            <p class="mt-12 text-rose-400 text-base font-medium">
+                Нажимай честно, любимая Никуличка 🥰
+            </p>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬ ВРУНИШКА -->
+    <div id="modal-vrunishka" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
+        <div class="modal bg-white rounded-3xl max-w-md w-full mx-6 overflow-hidden">
+            <div class="p-8 text-center">
+                <img id="cat-photo" src="assets/photos/cat.jpg" class="w-full rounded-3xl mb-6" alt="Котик">
+                <p class="text-4xl font-bold text-rose-600 mb-6">💔 Врунишка, признавайся! 💔</p>
+                <button onclick="showNextAfterVrunishka()" 
+                        class="w-full py-6 bg-rose-500 text-white text-2xl font-bold rounded-3xl hover:bg-rose-600">
+                    Шучу, скучаю😘
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬ "Я ТАК И ЗНАЛ" -->
+    <div id="modal-know" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
+        <div class="modal bg-white rounded-3xl max-w-md w-full mx-6 p-10 text-center">
+            <div class="flex justify-center gap-8 mb-8">
+                <span class="text-8xl">🐱</span>
+                <span class="text-8xl">❤️</span>
+            </div>
+            <p class="love-font text-4xl text-rose-600 mb-2">Я так и знал, любимая...</p>
+            <p class="text-3xl mb-10">держи Никуся 😘</p>
+            <div onclick="showEnvelopeModal()" 
+                 class="mx-auto w-28 h-28 flex items-center justify-center text-[120px] cursor-pointer hover:scale-110 transition-all active:scale-95">
+                🌸
+            </div>
+            <p class="text-rose-400 text-base mt-4">нажми на цветочек</p>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬ КОНВЕРТИК -->
+    <div id="modal-envelope" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
+        <div class="modal bg-white rounded-3xl max-w-md w-full mx-6 p-10 text-center relative">
+            <div id="envelope-container" onclick="openEnvelopeAndLetter()" class="cursor-pointer">
+                <div id="closed-envelope">📬</div>
+                <p class="love-font text-3xl text-rose-500 mb-2">Здесь ещё кое-что для любимой Никули</p>
+                <p class="text-rose-400 text-base">нажми на конвертик</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬ ПИСЬМА -->
+    <div id="modal-letter" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
+        <div class="modal bg-white rounded-3xl max-w-2xl w-full mx-6 p-12 text-center">
+            <div class="love-font text-rose-700 text-[24px] leading-relaxed tracking-wide">
+                Моя любимая,<br>я люблю тебя<br>Никуличка,<br><br>
+                Знаешь я теряю свободу, когда теряю тебя,<br>и я теряю голос,<br>я никогда не потеряю тебя,<br>ведь ты моё счастье)<br><br>
+                Ты такая, даже не знаю как описать тебя,<br>нет слов, просто нет слов)<br><br>
+                На моём плече засыпает моё счастье,<br>счастье...)<br><br>
+                Счастье моё — быть с тобой вдвоём,<br>когда вокруг бесконечный бой,<br>в моём сердце мир, в моём сердце покой💞
+            </div>
+            <div class="mt-10 text-right love-font text-4xl text-rose-600">~ Саша</div>
+            <button onclick="finishAndGoToSite()" 
+                    class="mt-12 w-full py-6 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-2xl font-bold rounded-3xl shadow-2xl hover:scale-105 transition-all">
+                И ты моё счастье ❤
+            </button>
+        </div>
+    </div>
+
+    <!-- ГЛАВНЫЙ САЙТ с тремя вкладками -->
+    <div id="main-site" class="hidden flex flex-col h-screen">
+        <header class="bg-white shadow py-6 text-center">
+            <h1 class="love-font text-5xl text-rose-600">Для моей Никули ❤️</h1>
+        </header>
+
+        <nav class="bg-white border-b flex text-center">
+            <button data-tab="0" class="tab-btn active">❤️ Для Никули</button>
+            <button data-tab="1" class="tab-btn">📸 Галерея</button>
+            <button data-tab="2" class="tab-btn">📌 Pinterest</button>
+        </nav>
+
+        <div class="scrollable-content">
+            <div id="tab-0" class="tab-pane">
+                <div class="max-w-xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+                    <img id="main-photo" class="w-full" src="" alt="Котик">
+                </div>
+                <p class="text-center mt-6 love-font text-3xl text-rose-500">Самое новое фото для тебя, любимая ❤️</p>
+            </div>
+            <div id="tab-1" class="tab-pane hidden">
+                <div id="local-gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+            </div>
+            <div id="tab-2" class="tab-pane hidden">
+                <div id="pinterest-gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="col-span-full text-center py-10 text-rose-400">Загрузка фотографий из Pinterest...</div>
+                </div>
+            </div>
+        </div>
+
+        <div onclick="restartIntro()" 
+             class="fixed bottom-8 right-8 w-20 h-20 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-6xl shadow-2xl cursor-pointer hover:scale-110 active:scale-90 z-50">
+            💗
+        </div>
+    </div>
+
+    <script>
+        // ========== ВАШИ ФОТОГРАФИИ ==========
+        let photos = [
+            "assets/photos/27 Meowordable Kitties Playfully Playing While You.jpg",
+            "assets/photos/angry cat.jpg",
+            "assets/photos/cat.jpg",
+            "assets/photos/catfish.jpg",
+            "assets/photos/Gato com gravata empresário.jpg",
+            "assets/photos/gatos.jpg",
+            "assets/photos/hola soy nueva.jpg",
+            "assets/photos/it's shower time.jpg",
+            "assets/photos/kisa2.jpg",
+            "assets/photos/kisa3.jpg",
+            "assets/photos/kisa4.jpg",
+            "assets/photos/kisa5.jpg",
+            "assets/photos/kiska.jpg",
+            "assets/photos/kisula.jpg",
+            "assets/photos/Kitty!!!.jpg",
+            "assets/photos/miau.jpg",
+            "assets/photos/miau2.jpg",
+            "assets/photos/MIUK KITTY!!.jpg",
+            "assets/photos/mur.jpg",
+            "assets/photos/murka.jpg",
+            "assets/photos/Аватарка с котиком.jpg",
+            "assets/photos/забыл.jpg",
+            "assets/photos/Здравствуй, Чмоня! .jpg",
+            "assets/photos/Котик(1).jpg",
+            "assets/photos/Котик.jpg",
+            "assets/photos/мем котики xs.jpg",
+            "assets/photos/мэм.jpg",
+            "assets/photos/трек супер мили котики.jpg",
+            "assets/photos/Фу покажи.jpg",
+            "assets/photos/чёрный котик лежит на книге.jpg",
+            "assets/photos/Cat1.jpg"
+        ];
+
+        const catImageUrl = "assets/photos/cat.jpg";
+
+        // ========== PINTEREST НАСТРОЙКИ ==========
+        // ⚠️ ВСТАВЬТЕ СВОИ ДАННЫЕ (username и название доски)
+        const PINTEREST_USER = "vertuskas";      // например, "mykittens"
+        const PINTEREST_BOARD = "miau"; // например, "cute-cats"
+        const RSS_URL = `https://www.pinterest.com/${PINTEREST_USER}/${PINTEREST_BOARD}.rss`;
+
+        let escapeCount = 0;
+        let hoverCount = 0;
+
+        // Летающие эмодзи
+        function createFlyingBackground() {
+            const container = document.getElementById('flying-bg');
+            const emojis = ['❤️', '💕', '🌸', '🐱', '💗'];
+            for (let i = 0; i < 22; i++) {
+                const el = document.createElement('div');
+                el.className = 'flying-emoji';
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.animationDuration = (Math.random() * 25 + 15) + 's';
+                el.style.animationDelay = '-' + Math.random() * 30 + 's';
+                el.style.opacity = Math.random() * 0.4 + 0.25;
+                container.appendChild(el);
+            }
+        }
+
+        // Кнопка "НЕТ" убегает
+        function runAway() {
+            const btn = document.getElementById('no-button');
+            const container = document.getElementById('buttons-container');
+            const maxX = container.offsetWidth - btn.offsetWidth - 50;
+            const maxY = container.offsetHeight - btn.offsetHeight - 20;
+            const newX = Math.random() * maxX + 25;
+            const newY = Math.random() * maxY + 10;
+            btn.style.position = 'absolute';
+            btn.style.left = newX + 'px';
+            btn.style.top = newY + 'px';
+            btn.style.transform = `rotate(${Math.random() * 35 - 17}deg)`;
+        }
+
+        function yesClicked() {
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('modal-know').classList.remove('hidden');
+        }
+
+        function noClicked() {
+            if (hoverCount >= 3 || escapeCount >= 4) {
+                document.getElementById('intro-screen').classList.add('hidden');
+                document.getElementById('modal-vrunishka').classList.remove('hidden');
+                document.getElementById('cat-photo').src = catImageUrl;
+                return;
+            }
+            escapeCount++;
+            runAway();
+        }
+
+        function addHoverBehavior() {
+            const btn = document.getElementById('no-button');
+            btn.addEventListener('mouseenter', () => {
+                if (hoverCount >= 3) return;
+                hoverCount++;
+                runAway();
+            });
+        }
+
+        function showNextAfterVrunishka() {
+            document.getElementById('modal-vrunishka').classList.add('hidden');
+            document.getElementById('modal-know').classList.remove('hidden');
+        }
+
+        function showEnvelopeModal() {
+            document.getElementById('modal-know').classList.add('hidden');
+            document.getElementById('modal-envelope').classList.remove('hidden');
+        }
+
+        function openEnvelopeAndLetter() {
+            const closed = document.getElementById('closed-envelope');
+            const modal = document.getElementById('modal-envelope');
+            closed.classList.add('envelope-opening');
+            setTimeout(() => {
+                closed.textContent = '📭';
+                closed.style.transition = 'transform 0.5s ease';
+                closed.style.transform = 'scale(1.65)';
+                createHeartExplosion(closed);
+            }, 800);
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.getElementById('modal-letter').classList.remove('hidden');
+            }, 1650);
+        }
+
+        function createHeartExplosion(envelopeEl) {
+            const modal = document.getElementById('modal-envelope');
+            const rect = envelopeEl.getBoundingClientRect();
+            const modalRect = modal.getBoundingClientRect();
+            const startX = rect.left - modalRect.left + rect.width / 2;
+            const startY = rect.top - modalRect.top + rect.height / 2 - 30;
+            const hearts = ['❤️', '💕', '💗', '💖', '💘'];
+            for (let i = 0; i < 28; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    heart.style.position = 'absolute';
+                    heart.style.left = `${startX}px`;
+                    heart.style.top = `${startY}px`;
+                    heart.style.fontSize = `${1.8 + Math.random() * 1.8}rem`;
+                    heart.style.opacity = '0.95';
+                    heart.style.zIndex = '30';
+                    heart.style.pointerEvents = 'none';
+                    modal.appendChild(heart);
+                    const distanceX = (Math.random() * 260 - 130);
+                    const distanceY = - (180 + Math.random() * 240);
+                    heart.animate([
+                        { transform: 'translate(0px, 0px) scale(1)', opacity: 1 },
+                        { transform: `translate(${distanceX}px, ${distanceY}px) scale(0.4)`, opacity: 0 }
+                    ], { duration: 1200 + Math.random() * 900, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' });
+                    setTimeout(() => heart.remove(), 2800);
+                }, i * 28);
+            }
+        }
+
+        // Локальная галерея
+        function renderLocalGallery() {
+            const grid = document.getElementById('local-gallery');
+            if (!grid) return;
+            grid.innerHTML = '';
+            photos.forEach(src => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300';
+                card.innerHTML = `<div class="aspect-square overflow-hidden"><img src="${src}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" alt="cat photo"></div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function updateMainPhoto() {
+            const mainImg = document.getElementById('main-photo');
+            if (mainImg && photos.length) mainImg.src = photos[0];
+        }
+
+        // ========== УЛУЧШЕННАЯ ЗАГРУЗКА PINTEREST (парсинг RSS напрямую) ==========
+        async function loadPinterestBoard() {
+            const container = document.getElementById('pinterest-gallery');
+            container.innerHTML = '<div class="col-span-full text-center py-10 text-rose-400">Загрузка фотографий...</div>';
+            try {
+                // Используем прокси для обхода CORS (бесплатный)
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(RSS_URL)}`;
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
+                if (!data.contents) throw new Error('Не удалось загрузить RSS');
+
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+                const items = xmlDoc.querySelectorAll("item");
+                if (items.length === 0) throw new Error('Нет элементов в ленте');
+
+                const imageUrls = [];
+                items.forEach(item => {
+                    // Ищем media:content (оригинал)
+                    let imgUrl = null;
+                    const mediaContent = item.querySelector("media\\:content, content");
+                    if (mediaContent && mediaContent.getAttribute("url")) {
+                        imgUrl = mediaContent.getAttribute("url");
+                    } else {
+                        // Если нет media:content, ищем в description
+                        const description = item.querySelector("description");
+                        if (description) {
+                            const htmlContent = description.textContent;
+                            const imgMatch = htmlContent.match(/<img[^>]+src="([^">]+)"/);
+                            if (imgMatch && imgMatch[1]) {
+                                imgUrl = imgMatch[1];
+                                // Попытка преобразовать превью в оригинал
+                                if (imgUrl.includes("i.pinimg.com") && imgUrl.includes("/736x/")) {
+                                    imgUrl = imgUrl.replace("/736x/", "/originals/");
+                                } else if (imgUrl.includes("/564x/")) {
+                                    imgUrl = imgUrl.replace("/564x/", "/originals/");
+                                }
+                            }
+                        }
+                    }
+                    if (imgUrl) {
+                        // Убираем возможные параметры запроса
+                        imgUrl = imgUrl.split('?')[0];
+                        imageUrls.push(imgUrl);
+                    }
+                });
+
+                if (imageUrls.length === 0) throw new Error('Изображения не найдены');
+
+                container.innerHTML = '';
+                imageUrls.forEach(imgUrl => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300';
+                    card.innerHTML = `
+                        <div class="aspect-square overflow-hidden">
+                            <img src="${imgUrl}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" alt="pin image" loading="lazy">
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Ошибка загрузки Pinterest:', error);
+                container.innerHTML = `<div class="col-span-full text-center py-10 text-red-500">Не удалось загрузить фотографии. Проверьте имя пользователя и доску.</div>`;
+            }
+        }
+
+        // Переключение вкладок
+        function switchTab(tabIndex) {
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+            const activePane = document.getElementById(`tab-${tabIndex}`);
+            if (activePane) activePane.classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+                if (idx == tabIndex) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+            if (tabIndex === 2 && !window.pinterestLoaded) {
+                loadPinterestBoard();
+                window.pinterestLoaded = true;
+            }
+        }
+
+        function initSite() {
+            renderLocalGallery();
+            updateMainPhoto();
+            switchTab(0);
+        }
+
+        function finishAndGoToSite() {
+            document.getElementById('modal-letter').classList.add('hidden');
+            document.getElementById('main-site').classList.remove('hidden');
+            initSite();
+        }
+
+        function restartIntro() {
+            document.getElementById('main-site').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+            escapeCount = 0;
+            hoverCount = 0;
+            const btn = document.getElementById('no-button');
+            btn.style.position = 'static';
+            btn.style.transform = 'none';
+            btn.textContent = 'НЕТ 😢';
+        }
+
+        document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+            btn.addEventListener('click', () => switchTab(idx));
+        });
+
+        window.onload = () => {
+            createFlyingBackground();
+            addHoverBehavior();
+            console.log('✅ Сайт загружен. Pinterest загрузит оригинальные изображения.');
+        };
+    </script>
+</body>
+</html>
