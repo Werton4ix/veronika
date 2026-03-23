@@ -119,40 +119,6 @@
             border-color: transparent;
             color: #fb7185;
         }
-
-        /* Стили для iframe Pinterest — 5 колонок, скрываем шапку */
-        .pinterest-iframe-wrapper {
-            overflow: hidden;
-            position: relative;
-            height: calc(100vh - 120px);
-            width: 100%;
-            background: #fff;
-            border-radius: 24px;
-        }
-        .pinterest-iframe-wrapper iframe {
-            position: absolute;
-            top: -70px;
-            left: 0;
-            width: 100%;
-            height: calc(100% + 70px);
-            border: none;
-            overflow: hidden;
-        }
-        @media (max-width: 768px) {
-            .pinterest-iframe-wrapper iframe {
-                top: -60px;
-                height: calc(100% + 60px);
-            }
-        }
-        @media (max-width: 640px) {
-            .pinterest-iframe-wrapper {
-                height: calc(100vh - 100px);
-            }
-            .pinterest-iframe-wrapper iframe {
-                top: -50px;
-                height: calc(100% + 50px);
-            }
-        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-pink-100 via-rose-50 to-white text-rose-950 min-h-screen overflow-hidden relative">
@@ -243,7 +209,7 @@
         </div>
     </div>
 
-    <!-- ГЛАВНЫЙ САЙТ -->
+    <!-- ГЛАВНЫЙ САЙТ с двумя вкладками (Pinterest временно убран) -->
     <div id="main-site" class="hidden flex flex-col h-screen">
         <header class="bg-white shadow py-6 text-center">
             <h1 class="love-font text-5xl text-rose-600">Для моей Никули ❤️</h1>
@@ -252,7 +218,8 @@
         <nav class="bg-white border-b flex text-center">
             <button data-tab="0" class="tab-btn active">❤️ Для Никули</button>
             <button data-tab="1" class="tab-btn">📸 Галерея</button>
-            <button data-tab="2" class="tab-btn">📌 Pinterest</button>
+            <!-- Кнопка Pinterest временно скрыта. Раскомментируйте, чтобы вернуть -->
+            <!-- <button data-tab="2" class="tab-btn">📌 Pinterest</button> -->
         </nav>
 
         <div class="scrollable-content">
@@ -265,11 +232,12 @@
             <div id="tab-1" class="tab-pane hidden">
                 <div id="local-gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
             </div>
-            <div id="tab-2" class="tab-pane hidden">
+            <!-- Блок Pinterest временно скрыт. Раскомментируйте, чтобы вернуть -->
+            <!-- <div id="tab-2" class="tab-pane hidden">
                 <div class="pinterest-iframe-wrapper">
                     <iframe src="https://www.pinterest.com/vertuskas/miau/embed/?grid=5&width=100%" scrolling="no" frameborder="0"></iframe>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <div onclick="restartIntro()" 
@@ -279,7 +247,7 @@
     </div>
 
     <script>
-        // Ваши фотографии
+        // Ваши фотографии (пути могут отличаться, приведите в соответствие с вашей папкой)
         let photos = [
             "assets/photos/27.jpg",
             "assets/photos/supers.jpg",
@@ -483,7 +451,7 @@
         window.onload = () => {
             createFlyingBackground();
             addHoverBehavior();
-            console.log('✅ Сайт загружен. Pinterest доска в iframe (5 колонок) готова.');
+            console.log('✅ Сайт загружен. Pinterest вкладка временно скрыта.');
         };
     </script>
 </body>
