@@ -120,19 +120,38 @@
             color: #fb7185;
         }
 
-        .pinterest-widget .boardHeader,
-        .pinterest-widget .boardFollowButton,
-        .pinterest-widget .pinMeta,
-        .pinterest-widget .pinAttribution,
-        .pinterest-widget .boardName,
-        .pinterest-widget .boardHeader .boardName,
-        .pinterest-widget .boardHeader .followButton {
-            display: none !important;
+        /* Стили для iframe Pinterest — 5 колонок, скрываем шапку */
+        .pinterest-iframe-wrapper {
+            overflow: hidden;
+            position: relative;
+            height: calc(100vh - 120px);
+            width: 100%;
+            background: #fff;
+            border-radius: 24px;
         }
-
-        .pinterest-widget iframe {
-            width: 100% !important;
-            min-height: 500px;
+        .pinterest-iframe-wrapper iframe {
+            position: absolute;
+            top: -70px;
+            left: 0;
+            width: 100%;
+            height: calc(100% + 70px);
+            border: none;
+            overflow: hidden;
+        }
+        @media (max-width: 768px) {
+            .pinterest-iframe-wrapper iframe {
+                top: -60px;
+                height: calc(100% + 60px);
+            }
+        }
+        @media (max-width: 640px) {
+            .pinterest-iframe-wrapper {
+                height: calc(100vh - 100px);
+            }
+            .pinterest-iframe-wrapper iframe {
+                top: -50px;
+                height: calc(100% + 50px);
+            }
         }
     </style>
 </head>
@@ -247,9 +266,8 @@
                 <div id="local-gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
             </div>
             <div id="tab-2" class="tab-pane hidden">
-                <div class="pinterest-widget">
-                    <a data-pin-do="embedBoard" href="https://ru.pinterest.com/vertuskas/miau/"></a>
-                    <script async defer src="//assets.pinterest.com/js/pinit.js"></script>
+                <div class="pinterest-iframe-wrapper">
+                    <iframe src="https://www.pinterest.com/vertuskas/miau/embed/?grid=5&width=100%" scrolling="no" frameborder="0"></iframe>
                 </div>
             </div>
         </div>
@@ -465,7 +483,7 @@
         window.onload = () => {
             createFlyingBackground();
             addHoverBehavior();
-            console.log('✅ Сайт загружен. Pinterest виджет загрузится при открытии вкладки.');
+            console.log('✅ Сайт загружен. Pinterest доска в iframe (5 колонок) готова.');
         };
     </script>
 </body>
