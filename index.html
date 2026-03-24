@@ -59,30 +59,35 @@
             transition: all 0.45s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
         }
 
+        /* Базовые стили для окон */
         .window {
-            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
+            visibility: visible;
+            transition: visibility 0.3s;
         }
         .window.hidden {
-            opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
-        .window:not(.hidden) {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
+        .window-content {
+            transition: none; /* отключаем CSS-переходы, будем использовать анимации */
         }
 
-        .window-content {
-            transition: transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.4s ease;
+        /* Анимации */
+        @keyframes zoomOut {
+            0% { transform: scale(1); opacity: 1; }
+            30% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
         }
-        .window.hidden .window-content {
-            transform: scale(0.92) translateY(12px);
-            opacity: 0;
+        @keyframes zoomIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
-        .window:not(.hidden) .window-content {
-            transform: scale(1) translateY(0);
-            opacity: 1;
+
+        .animate-hide {
+            animation: zoomOut 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .animate-show {
+            animation: zoomIn 0.35s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
         }
 
         #main-site.window {
@@ -110,6 +115,17 @@
             color: #e11d48;
         }
 
+        /* Галерея: всегда 3 колонки, даже на телефоне */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        @media (max-width: 640px) {
+            .gallery-grid {
+                gap: 0.75rem;
+            }
+        }
         .scrollable-content {
             flex: 1;
             overflow-y: auto;
@@ -187,7 +203,7 @@
     <div id="modal-envelope" class="window hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
         <div class="window-content bg-white rounded-3xl max-w-md w-full mx-6 p-10 text-center relative">
             <div onclick="openEnvelopeAndLetter()" class="cursor-pointer hover:scale-105 transition-transform">
-                <div class="text-[280px] leading-none">💌</div>
+                <div id="envelope-emoji" class="text-[280px] leading-none">💌</div>
                 <p class="love-font text-3xl text-rose-500 mt-4">нажми на письмо</p>
             </div>
         </div>
@@ -237,7 +253,7 @@
                     <p class="text-center mt-6 love-font text-3xl text-rose-500">Самое новое фото для тебя, любимая ❤️</p>
                 </div>
                 <div id="tab-1" class="tab-pane hidden">
-                    <div id="local-gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+                    <div id="local-gallery" class="gallery-grid"></div>
                 </div>
             </div>
 
@@ -249,17 +265,16 @@
     </div>
 
     <script>
-        // ========== ГАЛЕРЕЯ — ВСЕ ФОТО ИЗ ВАШЕЙ ПАПКИ (точные имена из скриншота) ==========
+        // ========== ВСЕ ФОТО ИЗ ПАПКИ (точные имена из вашего последнего сообщения) ==========
         let photos = [
-            "assets/photos/27.jpg",
-            "assets/photos/supers.jpg",
+            "assets/photos/27 Meowordable Kitties Playfully Playing While You.jpg",
             "assets/photos/angry cat.jpg",
             "assets/photos/cat.jpg",
             "assets/photos/catfish.jpg",
-            "assets/photos/mimim.jpg",
+            "assets/photos/Gato com gravata empresário.jpg",
             "assets/photos/gatos.jpg",
             "assets/photos/hola soy nueva.jpg",
-            "assets/photos/shower time.jpg",
+            "assets/photos/it's shower time.jpg",
             "assets/photos/kisa2.jpg",
             "assets/photos/kisa3.jpg",
             "assets/photos/kisa4.jpg",
@@ -269,24 +284,58 @@
             "assets/photos/Kitty!!!.jpg",
             "assets/photos/miau.jpg",
             "assets/photos/miau2.jpg",
-            "assets/photos/MILK KITTY!!.jpg",
+            "assets/photos/MIUK KITTY!!.jpg",
             "assets/photos/mur.jpg",
             "assets/photos/murka.jpg",
-            "assets/photos/avakit.jpg",
-            "assets/photos/zabil.jpg",
-            "assets/photos/cmonya.jpg",
-            "assets/photos/kotik1.jpg",
-            "assets/photos/kotiks.jpg",
-            "assets/photos/memesik.jpg",
-            "assets/photos/mem.jpg",
-            "assets/photos/fu pokaji.jpg",
-            "assets/photos/chorni.jpg",
+            "assets/photos/Аватарка с котиком.jpg",
+            "assets/photos/забыл.jpg",
+            "assets/photos/Здравствуй, Чмоня! .jpg",
+            "assets/photos/Котик(1).jpg",
+            "assets/photos/Котик.jpg",
+            "assets/photos/мем котики xs.jpg",
+            "assets/photos/мэм.jpg",
+            "assets/photos/трек супер мили котики.jpg",
+            "assets/photos/Фу покажи.jpg",
+            "assets/photos/чёрный котик лежит на книге.jpg",
             "assets/photos/Cat1.jpg"
         ];
 
         const catImageUrl = "assets/photos/cat.jpg";
         let escapeCount = 0, hoverCount = 0;
+        let currentAnimation = null;
 
+        // ========== АНИМАЦИИ ПЕРЕХОДОВ ==========
+        function animateHide(windowElement, callback) {
+            const content = windowElement.querySelector('.window-content');
+            if (!content) return;
+            content.classList.add('animate-hide');
+            content.addEventListener('animationend', function onEnd() {
+                content.classList.remove('animate-hide');
+                windowElement.classList.add('hidden');
+                if (callback) callback();
+                content.removeEventListener('animationend', onEnd);
+            });
+        }
+
+        function animateShow(windowElement) {
+            windowElement.classList.remove('hidden');
+            const content = windowElement.querySelector('.window-content');
+            if (!content) return;
+            content.classList.add('animate-show');
+            content.addEventListener('animationend', function onEnd() {
+                content.classList.remove('animate-show');
+                content.removeEventListener('animationend', onEnd);
+            });
+        }
+
+        // Общая функция смены окон (скрыть текущее, показать следующее)
+        function switchWindows(hideWindow, showWindow) {
+            animateHide(hideWindow, () => {
+                animateShow(showWindow);
+            });
+        }
+
+        // ========== ФОНОВЫЕ ЛЕТАЮЩИЕ ЭМОДЗИ ==========
         function createFlyingBackground() {
             const container = document.getElementById('flying-bg');
             const emojis = ['❤️', '💕', '🌸', '🐱', '💗'];
@@ -302,6 +351,7 @@
             }
         }
 
+        // ========== УБЕГАЮЩАЯ КНОПКА ==========
         function runAway() {
             const btn = document.getElementById('no-button');
             const container = document.getElementById('buttons-container');
@@ -315,26 +365,6 @@
             btn.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
         }
 
-        function yesClicked() {
-            document.getElementById('intro-screen').classList.add('hidden');
-            setTimeout(() => {
-                document.getElementById('modal-know').classList.remove('hidden');
-            }, 200);
-        }
-
-        function noClicked() {
-            if (hoverCount >= 3 || escapeCount >= 4) {
-                document.getElementById('intro-screen').classList.add('hidden');
-                setTimeout(() => {
-                    document.getElementById('modal-vrunishka').classList.remove('hidden');
-                    document.getElementById('cat-photo').src = catImageUrl;
-                }, 200);
-                return;
-            }
-            escapeCount++;
-            runAway();
-        }
-
         function addHoverBehavior() {
             const btn = document.getElementById('no-button');
             btn.addEventListener('mouseenter', () => {
@@ -344,28 +374,80 @@
             });
         }
 
+        // ========== МОДАЛЬНЫЕ ОКНА (с анимациями) ==========
+        function yesClicked() {
+            const intro = document.getElementById('intro-screen');
+            const modalKnow = document.getElementById('modal-know');
+            switchWindows(intro, modalKnow);
+        }
+
+        function noClicked() {
+            if (hoverCount >= 3 || escapeCount >= 4) {
+                const intro = document.getElementById('intro-screen');
+                const modalVrun = document.getElementById('modal-vrunishka');
+                switchWindows(intro, modalVrun);
+                document.getElementById('cat-photo').src = catImageUrl;
+                return;
+            }
+            escapeCount++;
+            runAway();
+        }
+
         function showNextAfterVrunishka() {
-            document.getElementById('modal-vrunishka').classList.add('hidden');
-            setTimeout(() => {
-                document.getElementById('modal-know').classList.remove('hidden');
-            }, 200);
+            const modalVrun = document.getElementById('modal-vrunishka');
+            const modalKnow = document.getElementById('modal-know');
+            switchWindows(modalVrun, modalKnow);
         }
 
         function showEnvelopeModal() {
-            document.getElementById('modal-know').classList.add('hidden');
-            setTimeout(() => {
-                document.getElementById('modal-envelope').classList.remove('hidden');
-            }, 200);
+            const modalKnow = document.getElementById('modal-know');
+            const modalEnvelope = document.getElementById('modal-envelope');
+            switchWindows(modalKnow, modalEnvelope);
+        }
+
+        function createHeartExplosion(targetElement) {
+            const modal = document.getElementById('modal-envelope');
+            const rect = targetElement.getBoundingClientRect();
+            const modalRect = modal.getBoundingClientRect();
+            const startX = rect.left - modalRect.left + rect.width / 2;
+            const startY = rect.top - modalRect.top + rect.height / 2 - 30;
+            const hearts = ['❤️', '💕', '💗', '💖', '💘'];
+            for (let i = 0; i < 28; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    heart.style.position = 'absolute';
+                    heart.style.left = `${startX}px`;
+                    heart.style.top = `${startY}px`;
+                    heart.style.fontSize = `${1.8 + Math.random() * 1.8}rem`;
+                    heart.style.opacity = '0.95';
+                    heart.style.zIndex = '30';
+                    heart.style.pointerEvents = 'none';
+                    modal.appendChild(heart);
+                    const distanceX = (Math.random() * 260 - 130);
+                    const distanceY = -(180 + Math.random() * 240);
+                    heart.animate([
+                        { transform: 'translate(0px, 0px) scale(1)', opacity: 1 },
+                        { transform: `translate(${distanceX}px, ${distanceY}px) scale(0.4)`, opacity: 0 }
+                    ], { duration: 1200 + Math.random() * 900, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' });
+                    setTimeout(() => heart.remove(), 2800);
+                }, i * 28);
+            }
         }
 
         function openEnvelopeAndLetter() {
-            document.getElementById('modal-envelope').classList.add('hidden');
+            const modalEnvelope = document.getElementById('modal-envelope');
+            const envelopeEmoji = document.getElementById('envelope-emoji');
+            // Запускаем вылет сердечек
+            createHeartExplosion(envelopeEmoji);
+            // Через небольшую задержку открываем письмо
             setTimeout(() => {
-                document.getElementById('modal-letter').classList.remove('hidden');
-            }, 200);
+                const modalLetter = document.getElementById('modal-letter');
+                switchWindows(modalEnvelope, modalLetter);
+            }, 300);
         }
 
-        // ==== ГАЛЕРЕЯ (3 колонки) ====
+        // ========== ГАЛЕРЕЯ (3 колонки всегда) ==========
         function renderLocalGallery() {
             const grid = document.getElementById('local-gallery');
             if (!grid) return;
@@ -383,6 +465,7 @@
             if (mainImg && photos.length) mainImg.src = photos[0];
         }
 
+        // ========== ВКЛАДКИ ==========
         function switchTab(tabIndex) {
             document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
             const activePane = document.getElementById(`tab-${tabIndex}`);
@@ -400,17 +483,16 @@
         }
 
         function finishAndGoToSite() {
-            document.getElementById('modal-letter').classList.add('hidden');
-            setTimeout(() => {
-                document.getElementById('main-site').classList.remove('hidden');
-            }, 200);
+            const modalLetter = document.getElementById('modal-letter');
+            const mainSite = document.getElementById('main-site');
+            switchWindows(modalLetter, mainSite);
+            initSite();
         }
 
         function restartIntro() {
-            document.getElementById('main-site').classList.add('hidden');
-            setTimeout(() => {
-                document.getElementById('intro-screen').classList.remove('hidden');
-            }, 200);
+            const mainSite = document.getElementById('main-site');
+            const intro = document.getElementById('intro-screen');
+            switchWindows(mainSite, intro);
             escapeCount = 0;
             hoverCount = 0;
             const btn = document.getElementById('no-button');
@@ -426,7 +508,7 @@
         window.onload = () => {
             createFlyingBackground();
             addHoverBehavior();
-            console.log('✅ Сайт загружен. Галерея с 3 колонками, все фото из папки.');
+            console.log('✅ Сайт загружен. Галерея 3 колонки, анимации переходов, сердечки вылетают.');
         };
     </script>
 </body>
