@@ -46,75 +46,56 @@
             box-shadow: 0 30px 60px -15px rgb(244 63 94 / 0.35);
             border-radius: 28px;
             position: relative;
+            min-height: 460px; /* фиксируем высоту, чтобы окно не дёргалось */
+        }
+
+        #buttons-container {
+            position: relative;
+            height: 92px;
+            min-height: 92px;
         }
 
         .no-btn {
             transition: all 0.45s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
         }
 
-        #closed-envelope {
-            font-size: 280px !important;
-            line-height: 1;
-            display: block;
-            margin: 0 auto 24px;
-            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        .envelope-opening {
-            animation: openEnvelope 1.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
-        }
-        @keyframes openEnvelope {
-            0%   { transform: rotate(0deg) scale(1); }
-            20%  { transform: rotate(-14deg) scale(1.12); }
-            35%  { transform: rotate(22deg) scale(1.08); }
-            55%  { transform: rotate(-10deg) scale(1.28); }
-            75%  { transform: rotate(8deg) scale(1.22); }
-            100% { transform: rotate(0deg) scale(1.42); }
-        }
-
-        /* Стили для анимированных переходов */
-        .overlay {
+        /* Анимации для окон */
+        .window {
             transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
         }
-        .overlay.hidden {
+        .window.hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
-        .overlay:not(.hidden) {
+        .window:not(.hidden) {
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
         }
 
-        .modal-content {
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        .window-content {
+            transition: transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.4s ease;
         }
-        .overlay.hidden .modal-content {
-            transform: scale(0.9) translateY(20px);
+        .window.hidden .window-content {
+            transform: scale(0.92) translateY(12px);
             opacity: 0;
         }
-        .overlay:not(.hidden) .modal-content {
+        .window:not(.hidden) .window-content {
             transform: scale(1) translateY(0);
             opacity: 1;
         }
 
-        /* Для экрана входа и главного сайта */
-        #intro-screen .modal-content,
-        #main-site .modal-content {
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+        #main-site.window {
+            background: linear-gradient(to bottom right, #fce7f3, #fff1f0, white);
         }
-        #intro-screen.hidden .modal-content,
-        #main-site.hidden .modal-content {
-            transform: scale(0.95) translateY(20px);
-            opacity: 0;
-        }
-        #intro-screen:not(.hidden) .modal-content,
-        #main-site:not(.hidden) .modal-content {
-            transform: scale(1) translateY(0);
-            opacity: 1;
+        #main-site .window-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Стили для вкладок */
+        /* Вкладки */
         .tab-btn {
             flex: 1;
             padding: 1.5rem;
@@ -147,14 +128,14 @@
 
     <div id="flying-bg" class="flying-bg"></div>
 
-    <!-- ЭКРАН ВХОДА (с анимацией) -->
-    <div id="intro-screen" class="overlay fixed inset-0 flex items-center justify-center z-50">
-        <div class="modal-content w-full max-w-[480px] mx-6">
+    <!-- ЭКРАН ВХОДА -->
+    <div id="intro-screen" class="window fixed inset-0 flex items-center justify-center z-50">
+        <div class="window-content w-full max-w-[480px] mx-6">
             <div class="intro-card relative rounded-3xl p-12 text-center">
                 <h1 class="love-font text-[46px] leading-none text-rose-600 mb-10">
                     Соскучилась<br>по мне? ❤️
                 </h1>
-                <div class="flex justify-center gap-8 items-center">
+                <div id="buttons-container" class="relative flex justify-center items-center gap-8" style="height: 92px;">
                     <button onclick="yesClicked()" 
                             class="bg-rose-500 hover:bg-rose-600 text-white px-16 py-6 rounded-3xl text-3xl font-bold shadow-xl transition-all active:scale-95 flex items-center gap-4">
                         ДА 
@@ -174,8 +155,8 @@
     </div>
 
     <!-- МОДАЛЬ ВРУНИШКА -->
-    <div id="modal-vrunishka" class="overlay hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
-        <div class="modal-content bg-white rounded-3xl max-w-md w-full mx-6 overflow-hidden">
+    <div id="modal-vrunishka" class="window hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
+        <div class="window-content bg-white rounded-3xl max-w-md w-full mx-6 overflow-hidden">
             <div class="p-8 text-center">
                 <img id="cat-photo" src="assets/photos/cat.jpg" class="w-full rounded-3xl mb-6" alt="Котик">
                 <p class="text-4xl font-bold text-rose-600 mb-6">💔 Врунишка, признавайся! 💔</p>
@@ -188,8 +169,8 @@
     </div>
 
     <!-- МОДАЛЬ "Я ТАК И ЗНАЛ" -->
-    <div id="modal-know" class="overlay hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
-        <div class="modal-content bg-white rounded-3xl max-w-md w-full mx-6 p-10 text-center">
+    <div id="modal-know" class="window hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
+        <div class="window-content bg-white rounded-3xl max-w-md w-full mx-6 p-10 text-center">
             <div class="flex justify-center gap-8 mb-8">
                 <span class="text-8xl">🐱</span>
                 <span class="text-8xl">❤️</span>
@@ -204,20 +185,19 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬ КОНВЕРТИК -->
-    <div id="modal-envelope" class="overlay hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
-        <div class="modal-content bg-white rounded-3xl max-w-md w-full mx-6 p-10 text-center relative">
-            <div id="envelope-container" onclick="openEnvelopeAndLetter()" class="cursor-pointer hover:scale-105 transition-transform">
-                <div id="closed-envelope">📬</div>
-                <p class="love-font text-3xl text-rose-500 mb-2">Здесь ещё кое-что для любимой Никули</p>
-                <p class="text-rose-400 text-base">нажми на конвертик</p>
+    <!-- МОДАЛЬ КОНВЕРТИК (заменён на эмодзи 💌) -->
+    <div id="modal-envelope" class="window hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
+        <div class="window-content bg-white rounded-3xl max-w-md w-full mx-6 p-10 text-center relative">
+            <div onclick="openEnvelopeAndLetter()" class="cursor-pointer hover:scale-105 transition-transform">
+                <div class="text-[280px] leading-none">💌</div>
+                <p class="love-font text-3xl text-rose-500 mt-4">нажми на письмо</p>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛЬ ПИСЬМА -->
-    <div id="modal-letter" class="overlay hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
-        <div class="modal-content bg-white rounded-3xl max-w-2xl w-full mx-6 p-12 text-center">
+    <!-- МОДАЛЬ ПИСЬМА (текст любовного письма) -->
+    <div id="modal-letter" class="window hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
+        <div class="window-content bg-white rounded-3xl max-w-2xl w-full mx-6 p-12 text-center">
             <div class="love-font text-rose-700 text-[24px] leading-relaxed tracking-wide">
                 Моя любимая,<br>я люблю тебя<br>Никуличка,<br><br>
                 Знаешь я теряю свободу, когда теряю тебя,<br>и я теряю голос,<br>я никогда не потеряю тебя,<br>ведь ты моё счастье)<br><br>
@@ -233,9 +213,9 @@
         </div>
     </div>
 
-    <!-- ГЛАВНЫЙ САЙТ (с анимацией) -->
-    <div id="main-site" class="overlay hidden fixed inset-0 flex flex-col h-screen bg-gradient-to-br from-pink-100 via-rose-50 to-white z-40">
-        <div class="modal-content flex flex-col h-full">
+    <!-- ГЛАВНЫЙ САЙТ -->
+    <div id="main-site" class="window hidden fixed inset-0 flex flex-col h-screen z-40">
+        <div class="window-content flex flex-col h-full">
             <header class="bg-white shadow py-6 text-center">
                 <h1 class="love-font text-5xl text-rose-600">Для моей Никули ❤️</h1>
             </header>
@@ -248,7 +228,7 @@
             <div class="scrollable-content">
                 <div id="tab-0" class="tab-pane">
                     <div class="max-w-xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
-                        <img id="main-photo" class="w-full" src="" alt="Котик">
+                        <img id="main-photo" class="w-full" src="" alt="Котик" onerror="this.src='assets/photos/cat.jpg'">
                     </div>
                     <p class="text-center mt-6 love-font text-3xl text-rose-500">Самое новое фото для тебя, любимая ❤️</p>
                 </div>
@@ -319,15 +299,14 @@
             }
         }
 
-        // Убегающая кнопка "НЕТ"
+        // Убегающая кнопка "НЕТ" (окно не меняет размер)
         function runAway() {
             const btn = document.getElementById('no-button');
-            const card = document.getElementById('intro-screen').querySelector('.intro-card');
-            if (!card) return;
-            const maxX = card.offsetWidth - btn.offsetWidth - 40;
-            const maxY = card.offsetHeight - btn.offsetHeight - 80;
+            const container = document.getElementById('buttons-container');
+            const maxX = container.offsetWidth - btn.offsetWidth - 40;
+            const maxY = container.offsetHeight - btn.offsetHeight - 20;
             const newX = Math.random() * maxX + 20;
-            const newY = Math.random() * maxY + 40;
+            const newY = Math.random() * maxY + 10;
             btn.style.position = 'absolute';
             btn.style.left = newX + 'px';
             btn.style.top = newY + 'px';
@@ -338,10 +317,9 @@
             const intro = document.getElementById('intro-screen');
             const modalKnow = document.getElementById('modal-know');
             intro.classList.add('hidden');
-            // небольшая задержка для плавного исчезновения
             setTimeout(() => {
                 modalKnow.classList.remove('hidden');
-            }, 100);
+            }, 200);
         }
 
         function noClicked() {
@@ -352,7 +330,7 @@
                 setTimeout(() => {
                     modalVrun.classList.remove('hidden');
                     document.getElementById('cat-photo').src = catImageUrl;
-                }, 100);
+                }, 200);
                 return;
             }
             escapeCount++;
@@ -360,7 +338,8 @@
         }
 
         function addHoverBehavior() {
-            document.getElementById('no-button').addEventListener('mouseenter', () => {
+            const btn = document.getElementById('no-button');
+            btn.addEventListener('mouseenter', () => {
                 if (hoverCount >= 3) return;
                 hoverCount++;
                 runAway();
@@ -373,7 +352,7 @@
             modalVrun.classList.add('hidden');
             setTimeout(() => {
                 modalKnow.classList.remove('hidden');
-            }, 100);
+            }, 200);
         }
 
         function showEnvelopeModal() {
@@ -382,57 +361,20 @@
             modalKnow.classList.add('hidden');
             setTimeout(() => {
                 modalEnvelope.classList.remove('hidden');
-            }, 100);
+            }, 200);
         }
 
+        // Просто открываем письмо без анимации конверта
         function openEnvelopeAndLetter() {
-            const closed = document.getElementById('closed-envelope');
-            const modal = document.getElementById('modal-envelope');
-            closed.classList.add('envelope-opening');
+            const modalEnvelope = document.getElementById('modal-envelope');
+            const modalLetter = document.getElementById('modal-letter');
+            modalEnvelope.classList.add('hidden');
             setTimeout(() => {
-                closed.textContent = '📭';
-                closed.style.transition = 'transform 0.5s ease';
-                closed.style.transform = 'scale(1.65)';
-                createHeartExplosion(closed);
-            }, 800);
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                const modalLetter = document.getElementById('modal-letter');
                 modalLetter.classList.remove('hidden');
-            }, 1650);
+            }, 200);
         }
 
-        function createHeartExplosion(envelopeEl) {
-            const modal = document.getElementById('modal-envelope');
-            const rect = envelopeEl.getBoundingClientRect();
-            const modalRect = modal.getBoundingClientRect();
-            const startX = rect.left - modalRect.left + rect.width / 2;
-            const startY = rect.top - modalRect.top + rect.height / 2 - 30;
-            const hearts = ['❤️', '💕', '💗', '💖', '💘'];
-            for (let i = 0; i < 28; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-                    heart.style.position = 'absolute';
-                    heart.style.left = `${startX}px`;
-                    heart.style.top = `${startY}px`;
-                    heart.style.fontSize = `${1.8 + Math.random() * 1.8}rem`;
-                    heart.style.opacity = '0.95';
-                    heart.style.zIndex = '30';
-                    heart.style.pointerEvents = 'none';
-                    modal.appendChild(heart);
-                    const distanceX = (Math.random() * 260 - 130);
-                    const distanceY = -(180 + Math.random() * 240);
-                    heart.animate([
-                        { transform: 'translate(0px, 0px) scale(1)', opacity: 1 },
-                        { transform: `translate(${distanceX}px, ${distanceY}px) scale(0.4)`, opacity: 0 }
-                    ], { duration: 1200 + Math.random() * 900, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' });
-                    setTimeout(() => heart.remove(), 2800);
-                }, i * 28);
-            }
-        }
-
-        // ==== ГАЛЕРЕЯ И ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ====
+        // Галерея
         function renderLocalGallery() {
             const grid = document.getElementById('local-gallery');
             if (!grid) return;
@@ -440,7 +382,7 @@
             photos.forEach(src => {
                 const card = document.createElement('div');
                 card.className = 'bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300';
-                card.innerHTML = `<div class="aspect-square overflow-hidden"><img src="${src}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" alt="cat photo"></div>`;
+                card.innerHTML = `<div class="aspect-square overflow-hidden"><img src="${src}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" alt="cat photo" onerror="this.src='assets/photos/cat.jpg'"></div>`;
                 grid.appendChild(card);
             });
         }
@@ -472,7 +414,7 @@
             modalLetter.classList.add('hidden');
             setTimeout(() => {
                 mainSite.classList.remove('hidden');
-            }, 100);
+            }, 200);
         }
 
         function restartIntro() {
@@ -481,7 +423,7 @@
             mainSite.classList.add('hidden');
             setTimeout(() => {
                 intro.classList.remove('hidden');
-            }, 100);
+            }, 200);
             escapeCount = 0;
             hoverCount = 0;
             const btn = document.getElementById('no-button');
@@ -490,7 +432,7 @@
             btn.textContent = 'НЕТ 😢';
         }
 
-        // Назначаем обработчики на кнопки вкладок
+        // Обработчики вкладок
         document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
             btn.addEventListener('click', () => switchTab(idx));
         });
@@ -498,7 +440,7 @@
         window.onload = () => {
             createFlyingBackground();
             addHoverBehavior();
-            console.log('✅ Сайт загружен. Вкладки работают, анимации переходов добавлены.');
+            console.log('✅ Сайт загружен. Галерея с fallback, письмо в виде 💌, кнопки стабильны.');
         };
     </script>
 </body>
