@@ -14,72 +14,153 @@
             font-display: swap;
         }
 
-        body { font-family: 'Inter', system-ui, sans-serif; }
-        .love-font { font-family: 'Laptev Brush Cyrillic', 'Great Vibes', cursive; }
-
-        .flying-bg { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
-        .flying-emoji { position: absolute; font-size: 2.8rem; opacity: 0.35; animation: fly linear infinite; user-select: none; }
-        @keyframes fly { 0% { transform: translateY(110vh) rotate(0deg); } 100% { transform: translateY(-120vh) rotate(720deg); } }
-
-        .intro-card { background: white; border: 14px solid #fda4af; box-shadow: 25px 25px 50px -12px rgb(244 63 94 / 0.25); border-radius: 28px; position: relative; }
-        .no-btn { transition: all 0.45s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important; }
-
-        /* Плавные переходы между окнами */
-        #intro-screen, #modal-vrunishka, #modal-know, #modal-envelope, #modal-letter, #main-site {
-            transition: opacity 400ms cubic-bezier(0.4, 0, 0.2, 1), transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .love-font {
+            font-family: 'Laptev Brush Cyrillic', 'Great Vibes', cursive;
         }
 
-        #closed-envelope { font-size: 280px !important; line-height: 1; display: block; margin: 0 auto 24px; transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
-        .envelope-opening { animation: openEnvelope 1.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; }
+        .flying-bg {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .flying-emoji {
+            position: absolute;
+            font-size: 2.8rem;
+            opacity: 0.35;
+            animation: fly linear infinite;
+            user-select: none;
+        }
+        @keyframes fly {
+            0% { transform: translateY(110vh) rotate(0deg); }
+            100% { transform: translateY(-120vh) rotate(720deg); }
+        }
+
+        .intro-card {
+            background: white;
+            border: 14px solid #fda4af;
+            box-shadow: 0 30px 60px -15px rgb(244 63 94 / 0.35);
+            border-radius: 28px;
+            position: relative;
+        }
+
+        .no-btn {
+            transition: all 0.45s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
+        }
+
+        #closed-envelope {
+            font-size: 280px !important;
+            line-height: 1;
+            display: block;
+            margin: 0 auto 24px;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .envelope-opening {
+            animation: openEnvelope 1.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
         @keyframes openEnvelope {
-            0% { transform: rotate(0deg) scale(1); } 20% { transform: rotate(-14deg) scale(1.12); } 35% { transform: rotate(22deg) scale(1.08); }
-            55% { transform: rotate(-10deg) scale(1.28); } 75% { transform: rotate(8deg) scale(1.22); } 100% { transform: rotate(0deg) scale(1.42); }
+            0%   { transform: rotate(0deg) scale(1); }
+            20%  { transform: rotate(-14deg) scale(1.12); }
+            35%  { transform: rotate(22deg) scale(1.08); }
+            55%  { transform: rotate(-10deg) scale(1.28); }
+            75%  { transform: rotate(8deg) scale(1.22); }
+            100% { transform: rotate(0deg) scale(1.42); }
+        }
+
+        /* Стили для вкладок */
+        .tab-btn {
+            flex: 1;
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: all 0.2s;
+            border-bottom-width: 4px;
+            border-bottom-style: solid;
+            border-bottom-color: transparent;
+            color: #fb7185;
+        }
+        .tab-btn.active {
+            border-bottom-color: #f43f5e;
+            color: #e11d48;
+        }
+
+        /* Прокручиваемая область */
+        .scrollable-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+        @media (max-width: 640px) {
+            .scrollable-content {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-pink-100 via-rose-50 to-white text-rose-950 min-h-screen overflow-hidden relative">
 
-    <!-- Летающие сердечки и котики на фоне (теперь точно работают) -->
     <div id="flying-bg" class="flying-bg"></div>
 
     <!-- ЭКРАН ВХОДА -->
     <div id="intro-screen" class="fixed inset-0 flex items-center justify-center z-50">
         <div id="intro-card" class="intro-card relative w-full max-w-[480px] mx-6 rounded-3xl p-12 text-center">
-            <h1 class="love-font text-[46px] leading-none text-rose-600 mb-10">Соскучилась<br>по мне? ❤️</h1>
+            <h1 class="love-font text-[46px] leading-none text-rose-600 mb-10">
+                Соскучилась<br>по мне? ❤️
+            </h1>
             <div class="flex justify-center gap-8 items-center">
-                <button onclick="yesClicked()" class="bg-rose-500 hover:bg-rose-600 text-white px-16 py-6 rounded-3xl text-3xl font-bold shadow-xl transition-all active:scale-95 flex items-center gap-4">
-                    ДА <span class="text-4xl">❤️</span>
+                <button onclick="yesClicked()" 
+                        class="bg-rose-500 hover:bg-rose-600 text-white px-16 py-6 rounded-3xl text-3xl font-bold shadow-xl transition-all active:scale-95 flex items-center gap-4">
+                    ДА 
+                    <span class="text-4xl">❤️</span>
                 </button>
-                <button id="no-button" onclick="noClicked()" class="no-btn bg-white border-4 border-rose-400 text-rose-500 px-14 py-6 rounded-3xl text-3xl font-bold shadow-xl">
+                <button id="no-button" 
+                        onclick="noClicked()" 
+                        class="no-btn bg-white border-4 border-rose-400 text-rose-500 px-14 py-6 rounded-3xl text-3xl font-bold shadow-xl">
                     НЕТ 😢
                 </button>
             </div>
-            <p class="mt-12 text-rose-400 text-base font-medium">Нажимай честно, любимая Никуличка 🥰</p>
+            <p class="mt-12 text-rose-400 text-base font-medium">
+                Нажимай честно, любимая Никуличка 🥰
+            </p>
         </div>
     </div>
 
-    <!-- МОДАЛИ -->
+    <!-- МОДАЛЬ ВРУНИШКА -->
     <div id="modal-vrunishka" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
         <div class="modal bg-white rounded-3xl max-w-md w-full mx-6 overflow-hidden">
             <div class="p-8 text-center">
                 <img id="cat-photo" src="assets/photos/cat.jpg" class="w-full rounded-3xl mb-6" alt="Котик">
                 <p class="text-4xl font-bold text-rose-600 mb-6">💔 Врунишка, признавайся! 💔</p>
-                <button onclick="showNextAfterVrunishka()" class="w-full py-6 bg-rose-500 text-white text-2xl font-bold rounded-3xl hover:bg-rose-600">Шучу, скучаю😘</button>
+                <button onclick="showNextAfterVrunishka()" 
+                        class="w-full py-6 bg-rose-500 text-white text-2xl font-bold rounded-3xl hover:bg-rose-600">
+                    Шучу, скучаю😘
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- МОДАЛЬ "Я ТАК И ЗНАЛ" -->
     <div id="modal-know" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
         <div class="modal bg-white rounded-3xl max-w-md w-full mx-6 p-10 text-center">
-            <div class="flex justify-center gap-8 mb-8"><span class="text-8xl">🐱</span><span class="text-8xl">❤️</span></div>
+            <div class="flex justify-center gap-8 mb-8">
+                <span class="text-8xl">🐱</span>
+                <span class="text-8xl">❤️</span>
+            </div>
             <p class="love-font text-4xl text-rose-600 mb-2">Я так и знал, любимая...</p>
             <p class="text-3xl mb-10">держи Никуся 😘</p>
-            <div onclick="showEnvelopeModal()" class="mx-auto w-28 h-28 flex items-center justify-center text-[120px] cursor-pointer hover:scale-110 transition-all active:scale-95">🌸</div>
+            <div onclick="showEnvelopeModal()" 
+                 class="mx-auto w-28 h-28 flex items-center justify-center text-[120px] cursor-pointer hover:scale-110 transition-all active:scale-95">
+                🌸
+            </div>
             <p class="text-rose-400 text-base mt-4">нажми на цветочек</p>
         </div>
     </div>
 
-    <!-- КОНВЕРТИК (исправлен и работает) -->
+    <!-- МОДАЛЬ КОНВЕРТИК -->
     <div id="modal-envelope" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
         <div class="modal bg-white rounded-3xl max-w-md w-full mx-6 p-10 text-center relative">
             <div id="envelope-container" onclick="openEnvelopeAndLetter()" class="cursor-pointer hover:scale-105 transition-transform">
@@ -101,7 +182,10 @@
                 Счастье моё — быть с тобой вдвоём,<br>когда вокруг бесконечный бой,<br>в моём сердце мир, в моём сердце покой💞
             </div>
             <div class="mt-10 text-right love-font text-4xl text-rose-600">~ Саша</div>
-            <button onclick="finishAndGoToSite()" class="mt-12 w-full py-6 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-2xl font-bold rounded-3xl shadow-2xl hover:scale-105 transition-all">И ты моё счастье ❤</button>
+            <button onclick="finishAndGoToSite()" 
+                    class="mt-12 w-full py-6 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-2xl font-bold rounded-3xl shadow-2xl hover:scale-105 transition-all">
+                И ты моё счастье ❤
+            </button>
         </div>
     </div>
 
@@ -110,11 +194,13 @@
         <header class="bg-white shadow py-6 text-center">
             <h1 class="love-font text-5xl text-rose-600">Для моей Никули ❤️</h1>
         </header>
+
         <nav class="bg-white border-b flex text-center">
-            <button data-tab="0" class="tab-btn active flex-1 py-5 text-2xl font-bold">❤️ Для Никули</button>
-            <button data-tab="1" class="tab-btn flex-1 py-5 text-2xl font-bold">📸 Галерея</button>
+            <button data-tab="0" class="tab-btn active">❤️ Для Никули</button>
+            <button data-tab="1" class="tab-btn">📸 Галерея</button>
         </nav>
-        <div class="flex-1 overflow-auto p-6">
+
+        <div class="scrollable-content">
             <div id="tab-0" class="tab-pane">
                 <div class="max-w-xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
                     <img id="main-photo" class="w-full" src="" alt="Котик">
@@ -125,14 +211,53 @@
                 <div id="local-gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
             </div>
         </div>
-        <div onclick="restartIntro()" class="fixed bottom-8 right-8 w-20 h-20 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-6xl shadow-2xl cursor-pointer hover:scale-110 active:scale-90 z-50">💗</div>
+
+        <div onclick="restartIntro()" 
+             class="fixed bottom-8 right-8 w-20 h-20 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-6xl shadow-2xl cursor-pointer hover:scale-110 active:scale-90 z-50">
+            💗
+        </div>
     </div>
 
     <script>
-        let photos = [ /* твой список фото */ ];
+        // ========== ВАШИ ФОТОГРАФИИ (восстановлено) ==========
+        let photos = [
+            "assets/photos/27.jpg",
+            "assets/photos/supers.jpg",
+            "assets/photos/angry cat.jpg",
+            "assets/photos/cat.jpg",
+            "assets/photos/catfish.jpg",
+            "assets/photos/mimim.jpg",
+            "assets/photos/gatos.jpg",
+            "assets/photos/hola soy nueva.jpg",
+            "assets/photos/shower time.jpg",
+            "assets/photos/kisa2.jpg",
+            "assets/photos/kisa3.jpg",
+            "assets/photos/kisa4.jpg",
+            "assets/photos/kisa5.jpg",
+            "assets/photos/kiska.jpg",
+            "assets/photos/kisula.jpg",
+            "assets/photos/Kitty!!!.jpg",
+            "assets/photos/miau.jpg",
+            "assets/photos/miau2.jpg",
+            "assets/photos/MILK KITTY!!.jpg",
+            "assets/photos/mur.jpg",
+            "assets/photos/murka.jpg",
+            "assets/photos/avakit.jpg",
+            "assets/photos/zabil.jpg",
+            "assets/photos/cmonya.jpg",
+            "assets/photos/kotik1.jpg",
+            "assets/photos/kotiks.jpg",
+            "assets/photos/memesik.jpg",
+            "assets/photos/mem.jpg",
+            "assets/photos/fu pokaji.jpg",
+            "assets/photos/chorni.jpg",
+            "assets/photos/Cat1.jpg"
+        ];
+
         const catImageUrl = "assets/photos/cat.jpg";
         let escapeCount = 0, hoverCount = 0;
 
+        // Фоновые летающие эмодзи
         function createFlyingBackground() {
             const container = document.getElementById('flying-bg');
             const emojis = ['❤️', '💕', '🌸', '🐱', '💗'];
@@ -148,6 +273,7 @@
             }
         }
 
+        // Убегающая кнопка "НЕТ"
         function runAway() {
             const btn = document.getElementById('no-button');
             const card = document.getElementById('intro-card');
@@ -161,7 +287,11 @@
             btn.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
         }
 
-        function yesClicked() { document.getElementById('intro-screen').classList.add('hidden'); document.getElementById('modal-know').classList.remove('hidden'); }
+        function yesClicked() {
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('modal-know').classList.remove('hidden');
+        }
+
         function noClicked() {
             if (hoverCount >= 3 || escapeCount >= 4) {
                 document.getElementById('intro-screen').classList.add('hidden');
@@ -181,8 +311,15 @@
             });
         }
 
-        function showNextAfterVrunishka() { document.getElementById('modal-vrunishka').classList.add('hidden'); document.getElementById('modal-know').classList.remove('hidden'); }
-        function showEnvelopeModal() { document.getElementById('modal-know').classList.add('hidden'); document.getElementById('modal-envelope').classList.remove('hidden'); }
+        function showNextAfterVrunishka() {
+            document.getElementById('modal-vrunishka').classList.add('hidden');
+            document.getElementById('modal-know').classList.remove('hidden');
+        }
+
+        function showEnvelopeModal() {
+            document.getElementById('modal-know').classList.add('hidden');
+            document.getElementById('modal-envelope').classList.remove('hidden');
+        }
 
         function openEnvelopeAndLetter() {
             const closed = document.getElementById('closed-envelope');
@@ -230,6 +367,46 @@
             }
         }
 
+        // ==== ГАЛЕРЕЯ И ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ====
+        function renderLocalGallery() {
+            const grid = document.getElementById('local-gallery');
+            if (!grid) return;
+            grid.innerHTML = '';
+            photos.forEach(src => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300';
+                card.innerHTML = `<div class="aspect-square overflow-hidden"><img src="${src}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" alt="cat photo"></div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function updateMainPhoto() {
+            const mainImg = document.getElementById('main-photo');
+            if (mainImg && photos.length) mainImg.src = photos[0];
+        }
+
+        function switchTab(tabIndex) {
+            // Скрываем все панели
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+            // Показываем выбранную
+            const activePane = document.getElementById(`tab-${tabIndex}`);
+            if (activePane) activePane.classList.remove('hidden');
+            // Обновляем класс активной кнопки
+            document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+                if (idx == tabIndex) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function initSite() {
+            renderLocalGallery();
+            updateMainPhoto();
+            switchTab(0); // по умолчанию открыта вкладка "Для Никули"
+        }
+
         function finishAndGoToSite() {
             document.getElementById('modal-letter').classList.add('hidden');
             document.getElementById('main-site').classList.remove('hidden');
@@ -239,29 +416,23 @@
         function restartIntro() {
             document.getElementById('main-site').classList.add('hidden');
             document.getElementById('intro-screen').classList.remove('hidden');
-            escapeCount = 0; hoverCount = 0;
+            escapeCount = 0;
+            hoverCount = 0;
             const btn = document.getElementById('no-button');
             btn.style.position = 'static';
             btn.style.transform = 'none';
             btn.textContent = 'НЕТ 😢';
         }
 
-        function initSite() {
-            const grid = document.getElementById('local-gallery');
-            grid.innerHTML = '';
-            photos.forEach(src => {
-                const div = document.createElement('div');
-                div.className = 'bg-white rounded-3xl overflow-hidden shadow-md';
-                div.innerHTML = `<img src="${src}" class="w-full aspect-square object-cover hover:scale-110 transition-transform">`;
-                grid.appendChild(div);
-            });
-            document.getElementById('main-photo').src = photos[0] || '';
-        }
+        // Назначаем обработчики на кнопки вкладок
+        document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+            btn.addEventListener('click', () => switchTab(idx));
+        });
 
         window.onload = () => {
-            createFlyingBackground();   // ← теперь точно запускается
+            createFlyingBackground();
             addHoverBehavior();
-            console.log('%c✅ Летающие сердечки на фоне + конвертик работает!', 'color:#e11d48; font-size:16px');
+            console.log('✅ Сайт загружен. Вкладки работают.');
         };
     </script>
 </body>
