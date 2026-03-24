@@ -46,7 +46,7 @@
             box-shadow: 0 30px 60px -15px rgb(244 63 94 / 0.35);
             border-radius: 28px;
             position: relative;
-            min-height: 460px; /* фиксируем высоту, чтобы окно не дёргалось */
+            min-height: 460px;
         }
 
         #buttons-container {
@@ -59,7 +59,6 @@
             transition: all 0.45s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
         }
 
-        /* Анимации для окон */
         .window {
             transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
         }
@@ -95,7 +94,6 @@
             flex-direction: column;
         }
 
-        /* Вкладки */
         .tab-btn {
             flex: 1;
             padding: 1.5rem;
@@ -185,7 +183,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬ КОНВЕРТИК (заменён на эмодзи 💌) -->
+    <!-- МОДАЛЬ КОНВЕРТИК (эмодзи 💌) -->
     <div id="modal-envelope" class="window hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
         <div class="window-content bg-white rounded-3xl max-w-md w-full mx-6 p-10 text-center relative">
             <div onclick="openEnvelopeAndLetter()" class="cursor-pointer hover:scale-105 transition-transform">
@@ -195,19 +193,33 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬ ПИСЬМА (текст любовного письма) -->
+    <!-- МОДАЛЬ ПИСЬМА (текст с разделителем и без лишних пробелов) -->
     <div id="modal-letter" class="window hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
-        <div class="window-content bg-white rounded-3xl max-w-2xl w-full mx-6 p-12 text-center">
-            <div class="love-font text-rose-700 text-[24px] leading-relaxed tracking-wide">
+        <div class="window-content bg-white rounded-3xl max-w-2xl w-full mx-6 p-8 text-center">
+            <div class="love-font text-rose-700 text-xl md:text-2xl leading-relaxed tracking-wide">
                 Моя любимая,<br>я люблю тебя<br>Никуличка,<br><br>
-                Знаешь я теряю свободу, когда теряю тебя,<br>и я теряю голос,<br>я никогда не потеряю тебя,<br>ведь ты моё счастье)<br><br>
-                Ты такая, даже не знаю как описать тебя,<br>нет слов, просто нет слов)<br><br>
-                На моём плече засыпает моё счастье,<br>счастье...)<br><br>
-                Счастье моё — быть с тобой вдвоём,<br>когда вокруг бесконечный бой,<br>в моём сердце мир, в моём сердце покой💞
+                Знаешь, я теряю свободу, когда теряю тебя,<br>
+                и я теряю голос,<br>
+                я никогда не потеряю тебя,<br>
+                ведь ты моё счастье)<br><br>
+                Ты такая, даже не знаю как описать тебя,<br>
+                нет слов, просто нет слов)<br><br>
+                На моём плече засыпает моё счастье,<br>
+                счастье...)<br><br>
+                Счастье моё — быть с тобой вдвоём,<br>
+                когда вокруг бесконечный бой,<br>
+                в моём сердце мир, в моём сердце покой💞
             </div>
-            <div class="mt-10 text-right love-font text-4xl text-rose-600">~ Саша</div>
+            <!-- Разделитель с сердечками -->
+            <div class="flex justify-center items-center gap-2 my-6">
+                <span class="text-rose-300 text-2xl">✧</span>
+                <span class="text-rose-400 text-xl">❤️</span>
+                <span class="text-rose-300 text-2xl">✧</span>
+                <span class="text-rose-400 text-xl">❤️</span>
+                <span class="text-rose-300 text-2xl">✧</span>
+            </div>
             <button onclick="finishAndGoToSite()" 
-                    class="mt-12 w-full py-6 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-2xl font-bold rounded-3xl shadow-2xl hover:scale-105 transition-all">
+                    class="mt-4 w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-2xl font-bold rounded-3xl shadow-2xl hover:scale-105 transition-all">
                 И ты моё счастье ❤
             </button>
         </div>
@@ -283,7 +295,6 @@
         const catImageUrl = "assets/photos/cat.jpg";
         let escapeCount = 0, hoverCount = 0;
 
-        // Фоновые летающие эмодзи
         function createFlyingBackground() {
             const container = document.getElementById('flying-bg');
             const emojis = ['❤️', '💕', '🌸', '🐱', '💗'];
@@ -299,7 +310,6 @@
             }
         }
 
-        // Убегающая кнопка "НЕТ" (окно не меняет размер)
         function runAway() {
             const btn = document.getElementById('no-button');
             const container = document.getElementById('buttons-container');
@@ -314,21 +324,17 @@
         }
 
         function yesClicked() {
-            const intro = document.getElementById('intro-screen');
-            const modalKnow = document.getElementById('modal-know');
-            intro.classList.add('hidden');
+            document.getElementById('intro-screen').classList.add('hidden');
             setTimeout(() => {
-                modalKnow.classList.remove('hidden');
+                document.getElementById('modal-know').classList.remove('hidden');
             }, 200);
         }
 
         function noClicked() {
             if (hoverCount >= 3 || escapeCount >= 4) {
-                const intro = document.getElementById('intro-screen');
-                const modalVrun = document.getElementById('modal-vrunishka');
-                intro.classList.add('hidden');
+                document.getElementById('intro-screen').classList.add('hidden');
                 setTimeout(() => {
-                    modalVrun.classList.remove('hidden');
+                    document.getElementById('modal-vrunishka').classList.remove('hidden');
                     document.getElementById('cat-photo').src = catImageUrl;
                 }, 200);
                 return;
@@ -347,34 +353,26 @@
         }
 
         function showNextAfterVrunishka() {
-            const modalVrun = document.getElementById('modal-vrunishka');
-            const modalKnow = document.getElementById('modal-know');
-            modalVrun.classList.add('hidden');
+            document.getElementById('modal-vrunishka').classList.add('hidden');
             setTimeout(() => {
-                modalKnow.classList.remove('hidden');
+                document.getElementById('modal-know').classList.remove('hidden');
             }, 200);
         }
 
         function showEnvelopeModal() {
-            const modalKnow = document.getElementById('modal-know');
-            const modalEnvelope = document.getElementById('modal-envelope');
-            modalKnow.classList.add('hidden');
+            document.getElementById('modal-know').classList.add('hidden');
             setTimeout(() => {
-                modalEnvelope.classList.remove('hidden');
+                document.getElementById('modal-envelope').classList.remove('hidden');
             }, 200);
         }
 
-        // Просто открываем письмо без анимации конверта
         function openEnvelopeAndLetter() {
-            const modalEnvelope = document.getElementById('modal-envelope');
-            const modalLetter = document.getElementById('modal-letter');
-            modalEnvelope.classList.add('hidden');
+            document.getElementById('modal-envelope').classList.add('hidden');
             setTimeout(() => {
-                modalLetter.classList.remove('hidden');
+                document.getElementById('modal-letter').classList.remove('hidden');
             }, 200);
         }
 
-        // Галерея
         function renderLocalGallery() {
             const grid = document.getElementById('local-gallery');
             if (!grid) return;
@@ -409,20 +407,16 @@
         }
 
         function finishAndGoToSite() {
-            const modalLetter = document.getElementById('modal-letter');
-            const mainSite = document.getElementById('main-site');
-            modalLetter.classList.add('hidden');
+            document.getElementById('modal-letter').classList.add('hidden');
             setTimeout(() => {
-                mainSite.classList.remove('hidden');
+                document.getElementById('main-site').classList.remove('hidden');
             }, 200);
         }
 
         function restartIntro() {
-            const mainSite = document.getElementById('main-site');
-            const intro = document.getElementById('intro-screen');
-            mainSite.classList.add('hidden');
+            document.getElementById('main-site').classList.add('hidden');
             setTimeout(() => {
-                intro.classList.remove('hidden');
+                document.getElementById('intro-screen').classList.remove('hidden');
             }, 200);
             escapeCount = 0;
             hoverCount = 0;
@@ -432,7 +426,6 @@
             btn.textContent = 'НЕТ 😢';
         }
 
-        // Обработчики вкладок
         document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
             btn.addEventListener('click', () => switchTab(idx));
         });
@@ -440,7 +433,7 @@
         window.onload = () => {
             createFlyingBackground();
             addHoverBehavior();
-            console.log('✅ Сайт загружен. Галерея с fallback, письмо в виде 💌, кнопки стабильны.');
+            console.log('✅ Сайт загружен. Галерея, письмо с разделителем, кнопки стабильны.');
         };
     </script>
 </body>
