@@ -192,13 +192,14 @@
             </div>
         </div>
     </div>
-    <!-- МОДАЛЬ ПИСЬМА (текст с разделителем и подписью) -->
+
+    <!-- МОДАЛЬ ПИСЬМА (исправлен текст) -->
     <div id="modal-letter" class="window hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[60]">
         <div class="window-content bg-white rounded-3xl max-w-2xl w-full mx-6 p-8 text-center">
             <div class="love-font text-rose-700 text-xl md:text-2xl leading-relaxed tracking-wide">
                 Моя любимая,<br>я люблю тебя Никуличка❤<br><br>
                 Знаешь я теряю свободу, когда тебя нету рядом,<br>
-                я схожу сума пока не увижу вновь тебя<br>
+                я схожу с ума, пока не увижу вновь тебя,<br>
                 ведь ты моё единственное счастье)<br><br>
                 И ты такая, даже не знаю как описать тебя,<br>
                 нет слов, просто нет слов)<br>
@@ -208,9 +209,7 @@
                 когда вокруг бесконечный бой, но с тобой,<br>
                 в моём сердце мир, в моём сердце покой💞
             </div>
-            <!-- Разделитель с подписью -->
             <div class="mt-10 text-right love-font text-4xl text-rose-600">~ Саша</div>
-			
             <button onclick="finishAndGoToSite()" 
                     class="mt-4 w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-2xl font-bold rounded-3xl shadow-2xl hover:scale-105 transition-all">
                 И ты моё счастье ❤
@@ -250,7 +249,7 @@
     </div>
 
     <script>
-        // ========== ВАШИ ФОТОГРАФИИ ==========
+        // ========== ГАЛЕРЕЯ — ВСЕ ФОТО ИЗ ВАШЕЙ ПАПКИ (точные имена из скриншота) ==========
         let photos = [
             "assets/photos/27.jpg",
             "assets/photos/supers.jpg",
@@ -366,6 +365,7 @@
             }, 200);
         }
 
+        // ==== ГАЛЕРЕЯ (3 колонки) ====
         function renderLocalGallery() {
             const grid = document.getElementById('local-gallery');
             if (!grid) return;
@@ -426,7 +426,7 @@
         window.onload = () => {
             createFlyingBackground();
             addHoverBehavior();
-            console.log('✅ Сайт загружен. Галерея, письмо с разделителем, кнопки стабильны.');
+            console.log('✅ Сайт загружен. Галерея с 3 колонками, все фото из папки.');
         };
     </script>
 </body>
